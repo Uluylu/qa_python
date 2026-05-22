@@ -32,7 +32,7 @@ class TestBooksCollector:
 
     def test_set_book_genre_for_not_existent_book(self, books):
         books.set_book_genre('1984', 'Ужасы')
-        assert books.get_book_genre('1984') == ''
+        assert books.get_book_genre('1984') == None
 
     def test_get_books_with_specific_genre_return_specific_books(self, books):
         books.set_book_genre('Дюна', 'Фантастика')
