@@ -1,13 +1,6 @@
 import pytest
 from main import BooksCollector
 
-@pytest.fixture()
-def books():
-    books = BooksCollector()
-    books.add_new_book('Дюна')
-    books.add_new_book('Шерлок Холмс')
-    return books
-
 class TestBooksCollector:
 
     def test_add_new_book_add_two_books(self):
@@ -17,10 +10,9 @@ class TestBooksCollector:
         assert len(collector.get_books_genre()) == 2
 
     @pytest.mark.parametrize('books_invalid_length', ['', 'Книга длиною сорок один символ для теста!'])
-    def test_add_new_book_add_invalid_length(self, books_invalid_length):
-        collector = BooksCollector()
-        collector.add_new_book(books_invalid_length)
-        assert len(collector.get_books_genre()) == 0
+    def test_add_new_book_add_invalid_length(self, books_invalid_length, books):
+        books.add_new_book(books_invalid_length)
+        assert len(books.get_books_genre()) == 2
     
     def test_set_book_genre_invalid_genre(self, books):
         books.set_book_genre('Дюна', 'Научная фантастика')
@@ -40,15 +32,14 @@ class TestBooksCollector:
         assert len(books.get_books_with_specific_genre('Детективы')) == 1
 
     @pytest.mark.parametrize('books_names, genre_new_books', [
-        ['Оно', 'Ужасы'], 
-        ['Винни Пух', 'Мультфильмы'], 
-        ['Бриллиантовая Рука', 'Комедии']
+        ('Оно', 'Ужасы'), 
+        ('Винни Пух', 'Мультфильмы'), 
+        ('Бриллиантовая Рука', 'Комедии')
     ])
-    def test_get_books_genre_added_book_has_correct_genre(self, books_names, genre_new_books):
-        collector = BooksCollector() 
-        collector.add_new_book(books_names)
-        collector.set_book_genre(books_names, genre_new_books)
-        assert collector.get_books_genre()[books_names] == genre_new_books
+    def test_get_books_genre_added_book_has_correct_genre(self, books_names, genre_new_books, books):
+        books.add_new_book(books_names)
+        books.set_book_genre(books_names, genre_new_books)
+        assert books.get_books_genre()[books_names] == genre_new_books
 
     def test_get_books_for_children_returns_only_children_books(self, books):
         books.set_book_genre('Дюна', 'Фантастика')
